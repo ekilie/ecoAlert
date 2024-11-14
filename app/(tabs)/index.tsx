@@ -1,55 +1,80 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { Image, StyleSheet, Platform, View, Button } from 'react-native';
+import { useColorScheme } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { HelloWave } from '@/components/HelloWave';
+import ParallaxScrollView from '@/components/ParallaxScrollView';
 
 export default function HomeScreen() {
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+      headerBackgroundColor={{ light: '#8CC63F', dark: '#365C2A' }}
       headerImage={
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+          source={require('@/assets/images/eco-alert-logo.png')}
+          style={styles.logo}
         />
       }>
+      
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText type="title" style={styles.welcomeText}>ecoAlert</ThemedText>
         <HelloWave />
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
+      
+      <ThemedView style={[
+        styles.sectionContainer, 
+        { backgroundColor: isDarkMode ? '#3E4A40' : '#E8F5E9' }
+      ]}>
+        <ThemedText type="subtitle" style={styles.sectionTitle}>🌎 Report an Issue</ThemedText>
         <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
+          Help make your community cleaner by reporting waste and environmental hazards. 
+          Your contributions make a difference!
         </ThemedText>
+        <Button
+          title="Report Now"
+          onPress={() => {/* navigate to report screen */}}
+          color={isDarkMode ? '#8CC63F' : '#365C2A'}
+        />
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
+
+      <ThemedView style={[
+        styles.sectionContainer, 
+        { backgroundColor: isDarkMode ? '#3E4A40' : '#E8F5E9' }
+      ]}>
+        <ThemedText type="subtitle" style={styles.sectionTitle}>📍 Explore Recent Reports</ThemedText>
         <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
+          Check out the latest reports from users in your area and across the globe.
         </ThemedText>
+        <Button
+          title="Explore"
+          onPress={() => {/* navigate to explore screen */}}
+          color={isDarkMode ? '#8CC63F' : '#365C2A'}
+        />
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
+
+      <ThemedView style={[
+        styles.sectionContainer, 
+        { backgroundColor: isDarkMode ? '#3E4A40' : '#E8F5E9' }
+      ]}>
+        <ThemedText type="subtitle" style={styles.sectionTitle}>🤝 Get Involved</ThemedText>
         <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
+          Join ecoAlert, participate in community cleanups, and track the positive impact you’re helping create.
         </ThemedText>
+        <Button
+          title="Join Us"
+          onPress={() => {/* navigate to involvement screen */}}
+          color={isDarkMode ? '#8CC63F' : '#365C2A'}
+        />
       </ThemedView>
+      
+      <View style={[styles.footerContainer, { backgroundColor: isDarkMode ? '#365C2A' : '#8CC63F' }]}>
+        <ThemedText style={styles.footerText}>
+          ecoAlert - Empowering communities to keep the environment clean and green!
+        </ThemedText>
+      </View>
     </ParallaxScrollView>
   );
 }
@@ -59,12 +84,41 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  sectionContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    borderRadius: 8,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
-  reactLogo: {
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  welcomeText: {
+    fontSize: 26,
+    color: '#365C2A',
+    fontWeight: 'bold',
+  },
+  footerContainer: {
+    alignItems: 'center',
+    paddingVertical: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    marginTop: 20,
+  },
+  footerText: {
+    color: 'white',
+    fontWeight: '600',
+  },
+  logo: {
     height: 178,
     width: 290,
     bottom: 0,
