@@ -1,75 +1,84 @@
-import { Image, StyleSheet, Platform, View, Button } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Image, StyleSheet, View, TouchableOpacity, Animated, ButtonProps } from 'react-native';
 import { useColorScheme } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 
-export default function HomeScreen() {
+interface SectionProps {
+  title: string;
+  description: string;
+  buttonText: string;
+  onPress: () => void;
+  isDarkMode: boolean;
+}
+
+const Section: React.FC<SectionProps> = ({ title, description, buttonText, onPress, isDarkMode }) => (
+  <ThemedView style={[styles.sectionContainer, { backgroundColor: isDarkMode ? '#3E4A40' : '#E8F5E9' }]}>
+    <ThemedText type="subtitle" style={styles.sectionTitle}>{title}</ThemedText>
+    <ThemedText style={styles.sectionDescription}>{description}</ThemedText>
+    <TouchableOpacity onPress={onPress} style={[styles.button, { backgroundColor: isDarkMode ? '#8CC63F' : '#365C2A' }]}>
+      <ThemedText style={styles.buttonText}>{buttonText}</ThemedText>
+    </TouchableOpacity>
+  </ThemedView>
+);
+
+const HomeScreen: React.FC = () => {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  // Fade-in animation for sections
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
 
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#8CC63F', dark: '#365C2A' }}
       headerImage={
-        <Image
+        <Animated.Image
           source={require('@/assets/images/eco-alert-logo.png')}
-          style={styles.logo}
+          style={[styles.logo, { opacity: fadeAnim }]}
         />
-      }>
-      
+      }
+    >
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title" style={styles.welcomeText}>ecoAlert</ThemedText>
         <HelloWave />
       </ThemedView>
-      
-      <ThemedView style={[
-        styles.sectionContainer, 
-        { backgroundColor: isDarkMode ? '#3E4A40' : '#E8F5E9' }
-      ]}>
-        <ThemedText type="subtitle" style={styles.sectionTitle}>🌎 Report an Issue</ThemedText>
-        <ThemedText>
-          Help make your community cleaner by reporting waste and environmental hazards. 
-          Your contributions make a difference!
-        </ThemedText>
-        <Button
-          title="Report Now"
+
+      <Animated.View style={{ opacity: fadeAnim }}>
+        <Section
+          title="🌎 Report an Issue"
+          description="Help make your community cleaner by reporting waste and environmental hazards. Your contributions make a difference!"
+          buttonText="Report Now"
           onPress={() => {/* navigate to report screen */}}
-          color={isDarkMode ? '#8CC63F' : '#365C2A'}
+          isDarkMode={isDarkMode}
         />
-      </ThemedView>
-
-      <ThemedView style={[
-        styles.sectionContainer, 
-        { backgroundColor: isDarkMode ? '#3E4A40' : '#E8F5E9' }
-      ]}>
-        <ThemedText type="subtitle" style={styles.sectionTitle}>📍 Explore Recent Reports</ThemedText>
-        <ThemedText>
-          Check out the latest reports from users in your area and across the globe.
-        </ThemedText>
-        <Button
-          title="Explore"
+        
+        <Section
+          title="📍 Explore Recent Reports"
+          description="Check out the latest reports from users in your area and across the globe."
+          buttonText="Explore"
           onPress={() => {/* navigate to explore screen */}}
-          color={isDarkMode ? '#8CC63F' : '#365C2A'}
+          isDarkMode={isDarkMode}
         />
-      </ThemedView>
-
-      <ThemedView style={[
-        styles.sectionContainer, 
-        { backgroundColor: isDarkMode ? '#3E4A40' : '#E8F5E9' }
-      ]}>
-        <ThemedText type="subtitle" style={styles.sectionTitle}>🤝 Get Involved</ThemedText>
-        <ThemedText>
-          Join ecoAlert, participate in community cleanups, and track the positive impact you’re helping create.
-        </ThemedText>
-        <Button
-          title="Join Us"
+        
+        <Section
+          title="🤝 Get Involved"
+          description="Join ecoAlert, participate in community cleanups, and track the positive impact you’re helping create."
+          buttonText="Join Us"
           onPress={() => {/* navigate to involvement screen */}}
-          color={isDarkMode ? '#8CC63F' : '#365C2A'}
+          isDarkMode={isDarkMode}
         />
-      </ThemedView>
-      
+      </Animated.View>
+
       <View style={[styles.footerContainer, { backgroundColor: isDarkMode ? '#365C2A' : '#8CC63F' }]}>
         <ThemedText style={styles.footerText}>
           ecoAlert - Empowering communities to keep the environment clean and green!
@@ -77,7 +86,9 @@ export default function HomeScreen() {
       </View>
     </ParallaxScrollView>
   );
-}
+};
+
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   titleContainer: {
@@ -89,22 +100,38 @@ const styles = StyleSheet.create({
   },
   sectionContainer: {
     paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderRadius: 8,
-    marginBottom: 10,
+    paddingVertical: 20,
+    borderRadius: 10,
+    marginBottom: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    transform: [{ scale: 0.98 }],
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '700',
+  },
+  sectionDescription: {
+    fontSize: 14,
+    marginVertical: 8,
+  },
+  button: {
+    marginTop: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: '600',
   },
   welcomeText: {
-    fontSize: 26,
-    color: '#365C2A',
+    fontSize: 28,
+    color: '#91d37c',
     fontWeight: 'bold',
   },
   footerContainer: {
@@ -117,12 +144,12 @@ const styles = StyleSheet.create({
   footerText: {
     color: 'white',
     fontWeight: '600',
+    fontSize: 16,
   },
   logo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
+    height: 270,
+    width: 270,
     position: 'absolute',
+    resizeMode: 'contain',
   },
 });
